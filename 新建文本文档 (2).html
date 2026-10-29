@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>多门考试倒计时时钟</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: #e2e8f0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 36px 16px 60px;
+  }
+  .app {
+    width: 500px;
+    max-width: 100%;
+  }
+  .card {
+    background: rgba(30, 41, 59, 0.88);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 22px;
+    padding: 26px 26px 22px;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.4);
+    margin-bottom: 18px;
+  }
+  .title {
+    font-size: 17px;
+    color: #94a3b8;
+    letter-spacing: 2px;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .now-time {
+    font-size: 42px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    color: #f1f5f9;
+  }
+  .now-date {
+    font-size: 13px;
+    color: #64748b;
+    text-align: center;
+    margin-top: 4px;
+    margin-bottom: 20px;
+  }
+  .divider {
+    height: 1px;
+    background: rgba(148,163,184,0.22);
+    margin: 0 0 18px;
+  }
+
+  /* 主状态区 */
+  .main-label {
+    font-size: 13px;
+    color: #94a3b8;
+    text-align: center;
+  }
+  .main-name {
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    color: #38bdf8;
+    margin: 6px 0 14px;
+    min-height: 28px;
+  }
+  .main-name.waiting { color: #94a3b8; }
+  .main-name.running { color: #34d399; }
+  .main-name.ended   { color: #fbbf24; }
+
+  .cd-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .cd-unit {
+    background: rgba(15,23,42,0.7);
+    border: 1px solid rgba(148,163,184,0.18);
+    border-radius: 14px;
+    padding: 12px 8px 8px;
+    min-width: 66px;
+    text-align: center;
+  }
+  .cd-num {
+    font-size: 30px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: #38bdf8;
+  }
+  .cd-num.urgent { color: #f87171; }
+  .cd-num.running { color: #34d399; }
+  .cd-num.ended  { color: #fbbf24; }
+  .cd-text {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 4px;
+  }
+  .status {
+    text-align: center;
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 6px;
+  }
+  .status.waiting { color: #38bdf8; }
+  .status.running { color: #34d399; }
+  .status.ended   { color: #fbbf24; }
+
+  /* 表单 */
+  .form-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  input[type="text"],
+  input[type="datetime-local"] {
+    background: rgba(15,23,42,0.7);
+    border: 1px solid rgba(148,163,184,0.32);
+    color: #e2e8f0;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 14px;
+    flex: 1;
+  }
+  .btn {
+    background: #38bdf8;
+    color: #0f172a;
+    border: none;
+    border-radius: 12px;
+    padding: 11px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+  }
+  .btn:hover { background: #7dd3fc; }
+
+  /* 列表 */
+  .list-title {
+    font-size: 15px;
+    color: #e2e8f0;
+    margin-bottom: 12px;
+  }
+  .empty {
+    font-size: 13px;
+    color: #64748b;
+    text-align: center;
+    padding: 14px 0;
+  }
+  .exam-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 12px;
+    background: rgba(15,23,42,0.45);
+    border: 1px solid rgba(148,163,184,0.15);
+    border-radius: 14px;
+    margin-bottom: 10px;
+  }
+  .exam-item.active { border-color: rgba(56,189,248,0.45); }
+  .exam-info { flex: 1; min-width: 0; }
+  .exam-name {
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #f1f5f9;
+  }
+  .exam-time {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 2px;
+  }
+  .exam-cd {
+    font-size: 13px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: #94a3b8;
+    white-space: nowrap;
+    text-align: right;
+    min-width: 110px;
+  }
+  .exam-cd.urgent  { color: #f87171; }
+  .exam-cd.running { color: #34d399; }
+  .exam-cd.ended   { color: #fbbf24; }
+  .del-btn {
+    background: none;
+    border: 1px solid rgba(248,113,113,0.45);
+    color: #f87171;
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .del-btn:hover { background: rgba(248,113,113,0.15); }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- 时钟 + 主倒计时 -->
+  <div class="card">
+    <div class="title">考试倒计时时钟</div>
+    <div class="now-time" id="nowTime">--:--:--</div>
+    <div class="now-date" id="nowDate">----/--/--</div>
+    <div class="divider"></div>
+    <div class="main-label" id="mainLabel">当前状态</div>
+    <div class="main-name waiting" id="mainName">暂无考试安排</div>
+    <div class="cd-row">
+      <div class="cd-unit"><div class="cd-num" id="cdA">0</div><div class="cd-text" id="cdAT">天</div></div>
+      <div class="cd-unit"><div class="cd-num" id="cdB">00</div><div class="cd-text" id="cdBT">时</div></div>
+      <div class="cd-unit"><div class="cd-num" id="cdC">00</div><div class="cd-text" id="cdCT">分</div></div>
+      <div class="cd-unit"><div class="cd-num" id="cdD">00</div><div class="cd-text" id="cdDT">秒</div></div>
+    </div>
+    <div class="status" id="status">请添加考试</div>
+  </div>
+
+  <!-- 添加考试 -->
+  <div class="card">
+    <div class="list-title">添加考试</div>
+    <div class="form-row">
+      <input type="text" id="nameInput" placeholder="科目名称，如 高等数学" />
+    </div>
+    <div class="form-row">
+      <input type="datetime-local" id="startInput" />
+    </div>
+    <div class="form-row">
+      <input type="datetime-local" id="endInput" />
+    </div>
+    <button class="btn" id="addBtn">添加考试</button>
+  </div>
+
+  <!-- 考试列表 -->
+  <div class="card">
+    <div class="list-title">考试列表</div>
+    <div id="examList"></div>
+  </div>
+</div>
+
+<script>
+const KEY = "exam_schedule_v2";
+
+function pad(n) { return String(n).padStart(2, "0"); }
+
+function getExams() {
+  try { return JSON.parse(localStorage.getItem(KEY)) || []; }
+  catch { return []; }
+}
+function saveExams(list) {
+  localStorage.setItem(KEY, JSON.stringify(list));
+}
+
+function fmtDT(iso) {
+  const d = new Date(iso);
+  return d.getFullYear() + "/" + pad(d.getMonth()+1) + "/" + pad(d.getDate())
+    + " " + pad(d.getHours()) + ":" + pad(d.getMinutes());
+}
+
+function escapeHtml(s) {
+  const d = document.createElement("div");
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+// 计算阶段
+function getPhase(startMs, endMs, now) {
+  if (now < startMs) return "waiting";
+  if (now < endMs)   return "running";
+  return "ended";
+}
+
+// 倒计时 / 已考时长
+function diffParts(absDiff) {
+  let d = Math.max(0, absDiff);
+  const days = Math.floor(d / 86400000); d -= days * 86400000;
+  const hrs  = Math.floor(d / 3600000);  d -= hrs  * 3600000;
+  const mins = Math.floor(d / 60000);    d -= mins * 60000;
+  const secs = Math.floor(d / 1000);
+  return { days, hrs, mins, secs };
+}
+
+// 时钟
+function updateClock() {
+  const now = new Date();
+  document.getElementById("nowTime").textContent =
+    pad(now.getHours()) + ":" + pad(now.getMinutes()) + ":" + pad(now.getSeconds());
+  document.getElementById("nowDate").textContent =
+    now.getFullYear() + "/" + pad(now.getMonth()+1) + "/" + pad(now.getDate())
+    + " " + ["周日","周一","周二","周三","周四","周五","周六"][now.getDay()];
+}
+
+// 主显示
+function renderMain(exams, now) {
+  const mainName  = document.getElementById("mainName");
+  const mainLabel = document.getElementById("mainLabel");
+  const status    = document.getElementById("status");
+  const cdA = document.getElementById("cdA");
+  const cdB = document.getElementById("cdB");
+  const cdC = document.getElementById("cdC");
+  const cdD = document.getElementById("cdD");
+  const cdAT = document.getElementById("cdAT");
+  const cdBT = document.getElementById("cdBT");
+  const cdCT = document.getElementById("cdCT");
+  const cdDT = document.getElementById("cdDT");
+
+  // 找最近一场未结束考试：优先进行中，其次未开始
+  let target = null;
+  for (const ex of exams) {
+    if (getPhase(ex.startMs, ex.endMs, now) !== "ended") { target = ex; break; }
+  }
+
+  if (!target) {
+    mainName.textContent = "暂无考试安排";
+    mainName.className = "main-name waiting";
+    mainLabel.textContent = "当前状态";
+    status.textContent = "请添加考试";
+    status.className = "status";
+    cdA.textContent = "0"; cdB.textContent = "00";
+    cdC.textContent = "00"; cdD.textContent = "00";
+    cdAT.textContent = "天"; cdBT.textContent = "时";
+    cdCT.textContent = "分"; cdDT.textContent = "秒";
+    [cdA, cdB, cdC, cdD].forEach(e => e.className = "cd-num");
+    return;
+  }
+
+  const phase = getPhase(target.startMs, target.endMs, now);
+  mainName.textContent = target.name;
+  mainName.className = "main-name " + phase;
+
+  if (phase === "waiting") {
+    mainLabel.textContent = "距离考试开始";
+    const p = diffParts(target.startMs - now);
+    cdA.textContent = p.days;
+    cdB.textContent = pad(p.hrs);
+    cdC.textContent = pad(p.mins);
+    cdD.textContent = pad(p.secs);
+    cdAT.textContent = "天"; cdBT.textContent = "时";
+    cdCT.textContent = "分"; cdDT.textContent = "秒";
+    const urgent = p.days === 0 && p.hrs === 0 && p.mins < 30;
+    [cdA, cdB, cdC, cdD].forEach(e => {
+      e.className = "cd-num" + (urgent ? " urgent" : "");
+    });
+    status.textContent = "倒计时中";
+    status.className = "status waiting";
+  } else if (phase === "running") {
+    mainLabel.textContent = "考试进行中";
+    const p = diffParts(now - target.startMs);
+    cdA.textContent = p.days;
+    cdB.textContent = pad(p.hrs);
+    cdC.textContent = pad(p.mins);
+    cdD.textContent = pad(p.secs);
+    cdAT.textContent = "天"; cdBT.textContent = "时";
+    cdCT.textContent = "分"; cdDT.textContent = "秒";
+    [cdA, cdB, cdC, cdD].forEach(e => e.className = "cd-num running");
+    status.textContent = "已开始，计时中";
+    status.className = "status running";
+  } else {
+    mainLabel.textContent = "考试已结束";
+    const p = diffParts(target.endMs - target.startMs);
+    cdA.textContent = p.days;
+    cdB.textContent = pad(p.hrs);
+    cdC.textContent = pad(p.mins);
+    cdD.textContent = pad(p.secs);
+    cdAT.textContent = "天"; cdBT.textContent = "时";
+    cdCT.textContent = "分"; cdDT.textContent = "秒";
+    [cdA, cdB, cdC, cdD].forEach(e => e.className = "cd-num ended");
+    status.textContent = "已结束";
+    status.className = "status ended";
+  }
+}
+
+// 列表
+function renderList(exams, now) {
+  const container = document.getElementById("examList");
+  if (exams.length === 0) {
+    container.innerHTML = '<div class="empty">暂无考试</div>';
+    return;
+  }
+  container.innerHTML = exams.map(ex => {
+    const phase = getPhase(ex.startMs, ex.endMs, now);
+    let cdText = "";
+    let cdCls = "";
+    if (phase === "waiting") {
+      const p = diffParts(ex.startMs - now);
+      cdText = "剩 " + (p.days > 0 ? p.days + "天 " : "")
+        + pad(p.hrs) + ":" + pad(p.mins) + ":" + pad(p.secs);
+      cdCls = p.days === 0 && p.hrs === 0 && p.mins < 30 ? "urgent" : "";
+    } else if (phase === "running") {
+      const p = diffParts(now - ex.startMs);
+      cdText = "已考 " + (p.days > 0 ? p.days + "天 " : "")
+        + pad(p.hrs) + ":" + pad(p.mins) + ":" + pad(p.secs);
+      cdCls = "running";
+    } else {
+      cdText = "已结束";
+      cdCls = "ended";
+    }
+    return `<div class="exam-item ${phase === 'waiting' ? 'active' : ''}">
+      <div class="exam-info">
+        <div class="exam-name">${escapeHtml(ex.name)}</div>
+        <div class="exam-time">${fmtDT(ex.start)} — ${fmtDT(ex.end)}</div>
+      </div>
+      <div class="exam-cd ${cdCls}">${cdText}</div>
+      <button class="del-btn" data-id="${ex.id}">删除</button>
+    </div>`;
+  }).join("");
+}
+
+function render() {
+  const now = Date.now();
+  let exams = getExams()
+    .map(ex => ({ ...ex, startMs: new Date(ex.start).getTime(), endMs: new Date(ex.end).getTime() }))
+    .sort((a, b) => a.startMs - b.startMs);
+  renderMain(exams, now);
+  renderList(exams, now);
+}
+
+// 添加
+document.getElementById("addBtn").addEventListener("click", () => {
+  const name  = document.getElementById("nameInput").value.trim();
+  const start = document.getElementById("startInput").value;
+  const end   = document.getElementById("endInput").value;
+  if (!name)  { alert("请输入科目名称"); return; }
+  if (!start) { alert("请选择开始时间"); return; }
+  if (!end)   { alert("请选择结束时间"); return; }
+  if (new Date(end).getTime() <= new Date(start).getTime()) {
+    alert("结束时间必须晚于开始时间");
+    return;
+  }
+  const list = getExams();
+  list.push({
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    name, start, end
+  });
+  saveExams(list);
+  document.getElementById("nameInput").value = "";
+  document.getElementById("startInput").value = "";
+  document.getElementById("endInput").value = "";
+  render();
+});
+
+// 删除
+document.getElementById("examList").addEventListener("click", e => {
+  const id = e.target.dataset.id;
+  if (!id) return;
+  saveExams(getExams().filter(x => x.id !== id));
+  render();
+});
+
+setInterval(() => { updateClock(); render(); }, 1000);
+updateClock();
+render();
+</script>
+</body>
+</html>
