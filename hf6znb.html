@@ -8,198 +8,78 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-    background: linear-gradient(135deg, #0f172a, #1e293b);
-    color: #e2e8f0;
+    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+    color: #1e293b;
     display: flex;
     justify-content: center;
     align-items: flex-start;
     min-height: 100vh;
     padding: 36px 16px 60px;
   }
-  .app {
-    width: 500px;
-    max-width: 100%;
-  }
+  .app { width: 500px; max-width: 100%; }
   .card {
-    background: rgba(30, 41, 59, 0.88);
-    border: 1px solid rgba(148, 163, 184, 0.2);
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid #e2e8f0;
     border-radius: 22px;
     padding: 26px 26px 22px;
-    box-shadow: 0 18px 50px rgba(0,0,0,0.4);
+    box-shadow: 0 18px 50px rgba(15, 23, 42, 0.1);
     margin-bottom: 18px;
   }
-  .title {
-    font-size: 17px;
-    color: #94a3b8;
-    letter-spacing: 2px;
-    text-align: center;
-    margin-bottom: 12px;
-  }
-  .now-time {
-    font-size: 42px;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-    text-align: center;
-    color: #f1f5f9;
-  }
-  .now-date {
-    font-size: 13px;
-    color: #64748b;
-    text-align: center;
-    margin-top: 4px;
-    margin-bottom: 20px;
-  }
-  .divider {
-    height: 1px;
-    background: rgba(148,163,184,0.22);
-    margin: 0 0 18px;
-  }
+  .title { font-size: 17px; color: #64748b; letter-spacing: 2px; text-align: center; margin-bottom: 12px; }
+  .now-time { font-size: 42px; font-weight: 700; font-variant-numeric: tabular-nums; text-align: center; color: #0f172a; }
+  .now-date { font-size: 13px; color: #64748b; text-align: center; margin-top: 4px; margin-bottom: 20px; }
+  .divider { height: 1px; background: #e2e8f0; margin: 0 0 18px; }
 
   /* 主状态区 */
-  .main-label {
-    font-size: 13px;
-    color: #94a3b8;
-    text-align: center;
-  }
-  .main-name {
-    font-size: 20px;
-    font-weight: 700;
-    text-align: center;
-    color: #38bdf8;
-    margin: 6px 0 14px;
-    min-height: 28px;
-  }
-  .main-name.waiting { color: #94a3b8; }
-  .main-name.running { color: #34d399; }
-  .main-name.ended   { color: #fbbf24; }
+  .main-label { font-size: 13px; color: #64748b; text-align: center; }
+  .main-name { font-size: 20px; font-weight: 700; text-align: center; color: #0284c7; margin: 6px 0 14px; min-height: 28px; }
+  .main-name.waiting { color: #64748b; }
+  .main-name.running { color: #059669; }
+  .main-name.ended { color: #b45309; }
 
-  .cd-row {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 12px;
-  }
-  .cd-unit {
-    background: rgba(15,23,42,0.7);
-    border: 1px solid rgba(148,163,184,0.18);
-    border-radius: 14px;
-    padding: 12px 8px 8px;
-    min-width: 66px;
-    text-align: center;
-  }
-  .cd-num {
-    font-size: 30px;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-    color: #38bdf8;
-  }
-  .cd-num.urgent { color: #f87171; }
-  .cd-num.running { color: #34d399; }
-  .cd-num.ended  { color: #fbbf24; }
-  .cd-text {
-    font-size: 12px;
-    color: #64748b;
-    margin-top: 4px;
-  }
-  .status {
-    text-align: center;
-    font-size: 13px;
-    color: #64748b;
-    margin-top: 6px;
-  }
-  .status.waiting { color: #38bdf8; }
-  .status.running { color: #34d399; }
-  .status.ended   { color: #fbbf24; }
+  .cd-row { display: flex; justify-content: center; gap: 10px; margin-bottom: 12px; }
+  .cd-unit { background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px 8px 8px; min-width: 66px; text-align: center; }
+  .cd-num { font-size: 30px; font-weight: 700; font-variant-numeric: tabular-nums; color: #0284c7; }
+  .cd-num.urgent { color: #dc2626; }
+  .cd-num.running { color: #059669; }
+  .cd-num.ended { color: #b45309; }
+  .cd-text { font-size: 12px; color: #64748b; margin-top: 4px; }
+  .status { text-align: center; font-size: 13px; color: #64748b; margin-top: 6px; }
+  .status.waiting { color: #0284c7; }
+  .status.running { color: #059669; }
+  .status.ended { color: #b45309; }
 
   /* 表单 */
-  .form-row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  input[type="text"],
-  input[type="datetime-local"] {
-    background: rgba(15,23,42,0.7);
-    border: 1px solid rgba(148,163,184,0.32);
-    color: #e2e8f0;
+  .form-row { display: flex; gap: 10px; margin-bottom: 10px; }
+  input[type="text"], input[type="datetime-local"] {
+    color-scheme: light;
+    background: #fff;
+    border: 1px solid #cbd5e1;
+    color: #1e293b;
     border-radius: 10px;
     padding: 10px 12px;
     font-size: 14px;
     flex: 1;
   }
-  .btn {
-    background: #38bdf8;
-    color: #0f172a;
-    border: none;
-    border-radius: 12px;
-    padding: 11px 20px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    width: 100%;
-  }
-  .btn:hover { background: #7dd3fc; }
+  input::placeholder { color: #94a3b8; }
+  input:focus { outline: 2px solid #7dd3fc; outline-offset: 1px; border-color: #0284c7; }
+  .btn { background: #0284c7; color: #fff; border: none; border-radius: 12px; padding: 11px 20px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; }
+  .btn:hover { background: #0369a1; }
 
   /* 列表 */
-  .list-title {
-    font-size: 15px;
-    color: #e2e8f0;
-    margin-bottom: 12px;
-  }
-  .empty {
-    font-size: 13px;
-    color: #64748b;
-    text-align: center;
-    padding: 14px 0;
-  }
-  .exam-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 12px;
-    background: rgba(15,23,42,0.45);
-    border: 1px solid rgba(148,163,184,0.15);
-    border-radius: 14px;
-    margin-bottom: 10px;
-  }
-  .exam-item.active { border-color: rgba(56,189,248,0.45); }
+  .list-title { font-size: 15px; color: #1e293b; margin-bottom: 12px; }
+  .empty { font-size: 13px; color: #64748b; text-align: center; padding: 14px 0; }
+  .exam-item { display: flex; align-items: center; gap: 10px; padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; margin-bottom: 10px; }
+  .exam-item.active { border-color: #7dd3fc; background: #f0f9ff; }
   .exam-info { flex: 1; min-width: 0; }
-  .exam-name {
-    font-size: 15px;
-    font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: #f1f5f9;
-  }
-  .exam-time {
-    font-size: 12px;
-    color: #64748b;
-    margin-top: 2px;
-  }
-  .exam-cd {
-    font-size: 13px;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-    color: #94a3b8;
-    white-space: nowrap;
-    text-align: right;
-    min-width: 110px;
-  }
-  .exam-cd.urgent  { color: #f87171; }
-  .exam-cd.running { color: #34d399; }
-  .exam-cd.ended   { color: #fbbf24; }
-  .del-btn {
-    background: none;
-    border: 1px solid rgba(248,113,113,0.45);
-    color: #f87171;
-    border-radius: 8px;
-    padding: 4px 10px;
-    font-size: 12px;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-  .del-btn:hover { background: rgba(248,113,113,0.15); }
+  .exam-name { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #0f172a; }
+  .exam-time { font-size: 12px; color: #64748b; margin-top: 2px; }
+  .exam-cd { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; color: #475569; white-space: nowrap; text-align: right; min-width: 110px; }
+  .exam-cd.urgent { color: #dc2626; }
+  .exam-cd.running { color: #059669; }
+  .exam-cd.ended { color: #b45309; }
+  .del-btn { background: #fff; border: 1px solid #fca5a5; color: #dc2626; border-radius: 8px; padding: 4px 10px; font-size: 12px; cursor: pointer; white-space: nowrap; }
+  .del-btn:hover { background: #fef2f2; }
 </style>
 </head>
 <body>
@@ -225,15 +105,9 @@
   <!-- 添加考试 -->
   <div class="card">
     <div class="list-title">添加考试</div>
-    <div class="form-row">
-      <input type="text" id="nameInput" placeholder="科目名称，如 高等数学" />
-    </div>
-    <div class="form-row">
-      <input type="datetime-local" id="startInput" />
-    </div>
-    <div class="form-row">
-      <input type="datetime-local" id="endInput" />
-    </div>
+    <div class="form-row"><input type="text" id="nameInput" placeholder="科目名称，如 高等数学" /></div>
+    <div class="form-row"><input type="datetime-local" id="startInput" /></div>
+    <div class="form-row"><input type="datetime-local" id="endInput" /></div>
     <button class="btn" id="addBtn">添加考试</button>
   </div>
 
